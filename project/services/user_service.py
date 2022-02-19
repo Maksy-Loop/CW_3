@@ -11,6 +11,33 @@ class UserService:
         user_d["password"] = generate_password_digest(user_d.get("password"))
         return self.dao.create(user_d)
 
+    def user_update(self, data_j, data_r):
+
+        data = decode_token(data_r.split("Bearer ")[-1])
+        email = data.get("email")
+
+        return self.dao.update(data_j, email)
+
+    def change_passwords(self, data_p, data_r):
+
+        data_t = decode_token(data_r.split("Bearer ")[-1])
+        email = data_t.get("email")
+        new_password = data_p.get("new_password")
+        old_password = data_p.get("old_password")
+
+        user = self.dao.get_by_username(email)
+
+        try:
+
+            if compare_passwords(user.password, old_password) == True:
+                data_p["new_password"] = generate_password_digest(new_password)
+                self.dao.update_password(data_p, email)
+            else:
+                return "Пароли не сопадают"
+
+        except Exception as e:
+            return f"{e} - ошибка"
+
     def create_tokens(self, data):
 
         email = data.get("email", None)
@@ -18,24 +45,25 @@ class UserService:
 
         try:
             data_user = self.dao.get_by_username(email)
-            compare_passwords(data_user.password, password)
+            if compare_passwords(data_user.password, password) == True:
 
-            data_dict = {
-                "email": data_user.email
-            }
+                data_dict = {
+                    "email": data_user.email
+                }
 
-            access_token = create_access_token(data_dict)
-            refresh_token = create_refresh_token(data_dict)
+                access_token = create_access_token(data_dict)
+                refresh_token = create_refresh_token(data_dict)
 
 
-            return {
-                "access_token": access_token,
-                "refresh_token": refresh_token
+                return {
+                    "access_token": access_token,
+                    "refresh_token": refresh_token
 
-            }
+                }
+            return f"Неверный пользователь или паролль"
 
         except Exception as e:
-            return f"{e} Неверный пользователь или паролль"
+            return f"{e} - ошибка"
 
     def create_new_tokens(self, data):
         try:
@@ -55,5 +83,8 @@ class UserService:
 
                 }
         except Exception as e:
-            return f"Неверный токен"
+            return f"{e} - ошибка"
+
+
+
 

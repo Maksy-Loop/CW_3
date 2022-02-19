@@ -10,7 +10,7 @@ class User(BaseMixin, db.Model):
     password = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100))
     surname = db.Column(db.String(100))
-    favorite_genre = db.Column(db.Integer, db.ForeignKey(Genre.id))
+    favourite_genre = db.Column(db.Integer, db.ForeignKey(Genre.id))
     genre = db.relationship(Genre)
 
     def __repr__(self):
