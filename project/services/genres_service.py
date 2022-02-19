@@ -16,5 +16,6 @@ class GenresService(BaseService):
         return GenreSchema().dump(genre)
 
     def get_all_genres(self):
+
         genres = self.dao.get_all()
         return GenreSchema(many=True).dump(genres)
