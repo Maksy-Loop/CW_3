@@ -7,7 +7,7 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 class BaseConfig:
     SECRET_KEY = "you-will-never-guess"
     JSON_AS_ASCII = False
-
+    ALGO = 'HS256'
     ITEMS_PER_PAGE = 12
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False

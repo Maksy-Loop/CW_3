@@ -1,15 +1,24 @@
 from flask_restx import Resource, Namespace
 from flask import request
-from implemented import user_service
+from project.implemented import user_service
 
-user_ns = Namespace('users')
+user_ns = Namespace('user')
 
 
 @user_ns.route('/')
 class UserView(Resource):
 
-    def post(self):
+    def get(self):
+        pass
+
+
+    def put(self):
         user_d = request.json
         user_service.create(user_d)
 
-        return "Done", 200
+        pass
+
+    def patch(self):
+        pass
+
+

@@ -1,23 +1,31 @@
 from flask_restx import Resource, Namespace
 from flask import jsonify, make_response, request
-from dao.model.user import UserSchema
-from implemented import auth_service
+from project.implemented import user_service
 
 auth_ns = Namespace('auth')
 
 
-@auth_ns.route('/')
-class AuthView(Resource):
+@auth_ns.route('/register')
+class AuthRegisterView(Resource):
+    def post(self):
+        user_d = request.json
+        user_service.create(user_d)
+
+        return "", 200
+
+
+@auth_ns.route('/login')
+class AuthLoginView(Resource):
 
     def post(self):
         data = request.json
-        tokens = auth_service.create_tokens(data)
+        tokens = user_service.create_tokens(data)
 
         return make_response(jsonify(tokens), 201)
 
     def put(self):
         data = request.json
-        tokens = auth_service.create_tokens_with_rt(data)
+        tokens = user_service.create_new_tokens(data)
 
         return make_response(jsonify(tokens), 201)
 
